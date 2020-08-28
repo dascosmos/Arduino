@@ -1,9 +1,9 @@
 from classes.game import Bcolors, Person
 
 
-magic = [{'name': 'Fire', 'cost':10, 'dmg': 100},
-         {'name': 'Thunderbolt', 'cost':10, 'dmg': 120},
-         {'name': 'Blizzard', 'cost':10, 'dmg': 100}]
+magic = [{'name': 'Fire', 'cost': 10, 'dmg': 100},
+         {'name': 'Thunderbolt', 'cost': 10, 'dmg': 120},
+         {'name': 'Blizzard', 'cost': 10, 'dmg': 100}]
 
 player1 = Person(400, 65, 60, 34, magic)
 enemy = Person(1200, 65, 60, 23, magic)
@@ -22,7 +22,7 @@ while running:
     if index == 0:
         dmg = player1.generate_damage()
         enemy.take_damage(dmg)
-        print("You attacked for", dmg, "points of dammage")
+        print("You attacked for", dmg, "points of damage")
     elif index == 1:
         player1.choose_magic()
         magic_choice = int(input("Choose magic: ")) - 1
@@ -39,8 +39,7 @@ while running:
         player1.reduce_mp(cost)
         enemy.take_damage(magic_dmg)
 
-        print(Bcolors.OKBLUE + "\n" + spell + " deals ", str(magic_dmg), "Ponts of damage" + Bcolors.ENDC + "\n")
-
+        print(Bcolors.OKBLUE + "\n" + spell + " deals ", str(magic_dmg), "Points of damage" + Bcolors.ENDC + "\n")
 
     enemy_choice = 1
 
@@ -51,8 +50,7 @@ while running:
     print("-------------------------------")
     print("Enemy HP", Bcolors.FAIL + str(enemy.get_hp()) + "/" + str(enemy.get_max_hp()) + Bcolors.ENDC + "\n")
     print("Your HP", Bcolors.OKGREEN + str(player1.get_hp()) + "/" + str(player1.get_max_hp()) + Bcolors.ENDC)
-    print("Your MP", Bcolors.OKBLUE + str(player1.get_mp())+ "/" + str(player1.get_max_mp()) + Bcolors.ENDC)
-
+    print("Your MP", Bcolors.OKBLUE + str(player1.get_mp()) + "/" + str(player1.get_max_mp()) + Bcolors.ENDC)
 
     if enemy.get_hp() == 0:
         print(Bcolors.OKGREEN + "You win!!" + Bcolors.ENDC)
