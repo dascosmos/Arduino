@@ -2,6 +2,7 @@ import random
 
 
 class Bcolors:
+
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
@@ -14,7 +15,7 @@ class Bcolors:
 
 class Person:
 
-    def __init__(self, hp, mp, atk, df, magic):
+    def __init__(self, hp, mp, atk, df, magic, items):
         self.maxhp = hp
         self.hp = hp
         self.maxmp = mp
@@ -23,20 +24,23 @@ class Person:
         self.atkl = atk - 10
         self.df = df
         self.magic = magic
-        self.actions = ['Attack', 'Magic']
+        self.items = items
+        self.actions = ['Attack', 'Magic', 'Items']
 
     def generate_damage(self):
         return random.randrange(self.atkl, self.atkh)
-
-    def generate_spell_damage(self, i):
-        mgl = self.magic[i]['dmg'] - 5
-        mgh = self.magic[i]['dmg'] + 5
-        return random.randrange(mgl, mgh)
 
     def take_damage(self, dmg):
         self.hp -= dmg
         if self.hp < 0:
             self.hp = 0
+        return self.hp
+
+    def heal(self, dmg):
+        self.hp += dmg
+        if self.hp > self.maxhp:
+            self.hp = self.maxhp
+
         return self.hp
 
     def reduce_mp(self, cost):
@@ -54,22 +58,23 @@ class Person:
     def get_max_mp(self):
         return self.maxmp
 
-    def get_spell_name(self, i):
-        return self.magic[i]['name']
-
-    def get_spell_mp_cost(self, i):
-        return self.magic[i]['cost']
-
     def choose_action(self):
         i = 1
         print(Bcolors.OKBLUE + "Actions" + Bcolors.ENDC)
         for item in self.actions:
-            print(str(i) + ":", item)
+            print("     ", str(i) + ":", item)
             i += 1
 
     def choose_magic(self):
         i = 1
         print(Bcolors.OKBLUE + "Magic" + Bcolors.ENDC)
         for spell in self.magic:
-            print(str(i) + ":", spell['name'], "{cost: ", str(spell['cost']) + "}")
+            print("     ", str(i) + ":", spell.name, "{cost: ", str(spell.cost) + "}")
+            i += 1
+
+    def choose_items(self):
+        i = 1
+        print(Bcolors.OKBLUE + "Items" + Bcolors.ENDC)
+        for item in self.items:
+            print("     ", str(i) + ":", item.name, ": ", str(item.description), "(x5)")
             i += 1
