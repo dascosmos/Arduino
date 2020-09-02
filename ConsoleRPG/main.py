@@ -183,11 +183,20 @@ while running:
 
             print(enemy.name, "attacks", players[target].name, "for", enemy_damage)
         elif enemy_choice == 1:
-            spell, magic_dmg = enemy.choose_enemy_spell()
+            magic_choice = random.randrange(0, len(enemy.magic))
+            spell = enemy.magic[magic_choice]
+            if enemy.get_mp() < spell.cost:
+                continue
+
+            magic_dmg = spell.generate_damage()
 
             if spell.type == "white":
-                enemy.heal(magic_dmg)
-                print(Bcolors.OKBLUE + spell.name, "heals for", str(magic_dmg) + Bcolors.ENDC)
+                if enemy.get_hp() / enemy.get_max_hp() * 100 < 50:
+                    enemy.heal(magic_dmg)
+                    print(Bcolors.OKBLUE + spell.name, "heals for", str(magic_dmg) + Bcolors.ENDC)
+                    enemy.reduce_mp(spell.cost)
+                else:
+                    continue
             elif spell.type == "black":
                 target = random.randrange(0, 3)
                 players[target].take_damage(magic_dmg)
@@ -196,5 +205,4 @@ while running:
                 if players[target].get_hp() == 0:
                     print(players[target].name + " has died.")
                     del players[target]
-
-            enemy.reduce_mp(spell.cost)
+                enemy.reduce_mp(spell.cost)
