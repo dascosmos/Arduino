@@ -82,9 +82,102 @@ class Person:
                   str(item["quantity"]) + ")")
             i += 1
 
+    def choose_target(self, enemies):
+        i = 1
+        print("\n" + Bcolors.FAIL + Bcolors.BOLD + "    TARGET:" + Bcolors.ENDC)
+        for enemy in enemies:
+            if enemy.get_hp() != 0:
+                print("     ", str(i) + ".", enemy.name)
+                i += 1
+        choice = int(input("    Choose target: ")) - 1
+        return choice
+
+
     def get_stats(self):
-        print("                   _________________________            __________")
-        print(Bcolors.BOLD + self.name + "    " + str(self.hp) + "/" + str(self.maxhp) + "|" +
-              Bcolors.OKGREEN + "█████████████████████████" + Bcolors.ENDC +
-              "|     " + Bcolors.BOLD + str(self.mp) + "/" + str(self.maxmp) + "|" + Bcolors.OKBLUE + "██████████" +
+
+        hp_bars = ""
+        hp_bar_thick = (self.hp / self.maxhp) * 100 / 4
+
+        while hp_bar_thick > 0:
+            hp_bars += "█"
+            hp_bar_thick -= 1
+
+        while len(hp_bars) < 25:
+            hp_bars += " "
+
+        mp_bars = ""
+        mp_bar_thick = (self.mp / self.maxmp) * 100 / 10
+
+        while mp_bar_thick > 0:
+            mp_bars += "█"
+            mp_bar_thick -= 1
+
+        while len(mp_bars) < 10:
+            mp_bars += " "
+
+        hp_string = str(self.hp) + "/" + str(self.maxhp)
+        current_hp = ""
+
+        if len(hp_string) < 9:
+            decreased = 9 - len(hp_string)
+            while decreased > 0:
+                current_hp += " "
+                decreased -= 1
+            current_hp += hp_string
+        else:
+            current_hp = hp_string
+
+        mp_string = str(self.mp) + "/" + str(self.maxmp)
+        current_mp = ""
+
+        if len(mp_string) < 7:
+            decreased = 7 - len(mp_string)
+            while decreased > 0:
+                current_mp += " "
+                decreased -= 1
+            current_mp += mp_string
+        else:
+            current_mp = mp_string
+
+        print("                   _________________________              __________")
+        print(Bcolors.BOLD + self.name + "    " + current_hp + "|" +
+              Bcolors.OKGREEN + hp_bars + Bcolors.ENDC +
+              "|     " + Bcolors.BOLD + current_mp + "|" + Bcolors.OKBLUE + mp_bars +
               Bcolors.ENDC + "|")
+
+    def get_enemy_stats(self):
+
+        hp_bars = ""
+        hp_bar_thick = (self.hp / self.maxhp) * 100 / 2
+
+        while hp_bar_thick > 0:
+            hp_bars += "█"
+            hp_bar_thick -= 1
+
+        while len(hp_bars) < 50:
+            hp_bars += " "
+
+        hp_string = str(self.hp) + "/" + str(self.maxhp)
+        current_hp = ""
+
+        if len(hp_string) < 11:
+            decreased = 11 - len(hp_string)
+            while decreased > 0:
+                current_hp += " "
+                decreased -= 1
+            current_hp += hp_string
+        else:
+            current_hp = hp_string
+
+        separator = ""
+        cont = 0
+        while cont < len(self.name + "    " + current_hp + "|"):
+            separator += " "
+            cont += 1
+
+        separator += "__________________________________________________"
+        print(separator)
+        print(Bcolors.BOLD + self.name + "    " + current_hp + "|" +
+              Bcolors.FAIL + hp_bars + Bcolors.ENDC +
+              "|     ")
+
