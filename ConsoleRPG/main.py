@@ -14,6 +14,7 @@ quake = Spell("Earthquake", 14, 600, "black")
 # Create white magic
 cure = Spell("Cure", 12, 600, "white")
 cura = Spell("Cura", 25, 1500, "white")
+curaga = Spell("Curaga", 50, 6000, "white")
 
 # create some items
 potion = Item("Potion", "potion", "Heals 50 HP", 50)
@@ -33,7 +34,7 @@ player_items = [{"item": potion, "quantity": 5},
                 {"item": hi_elixir, "quantity": 5},
                 {"item": grenade, "quantity": 5}]
 
-enemy_magic = [fire, thunder, blizzard, meteor]
+enemy_magic = [fire, curaga]
 enemy_items = [potion, hi_potion, super_potion, elixir, hi_elixir, grenade]
 
 
@@ -141,20 +142,15 @@ while running:
             elif item.type == "attack":
                 enemy = player.choose_target(enemies)
                 enemies[enemy].take_damage(item.props)
-                print(Bcolors.FAIL + "\n" + item.name, "deals", str(item.props), "points of damage to", enemies[enemy].name + Bcolors.ENDC)
+                print(Bcolors.FAIL + "\n" + item.name, "deals", str(item.props), "points of damage to",
+                      enemies[enemy].name + Bcolors.ENDC)
 
                 if enemies[enemy].get_hp() == 0:
                     print(enemies[enemy].name + " has died.")
                     del enemies[enemy]
 
-    enemy_choice = 1
-    target = random.randrange(0, 3)
-    enemy_damage = enemy2.generate_damage()
-    players[target].take_damage(enemy_damage)
-    print("Enemy attacks for", enemy_damage)
-
     print("\n")
-
+    # Check if battle is over
     defeated_enemies = 0
     defeated_players = 0
 
@@ -165,12 +161,40 @@ while running:
     for enemy in enemies:
         if enemy.get_hp() == 0:
             defeated_enemies += 1
-
+    # check if enemies are defeated
     if defeated_enemies == 3:
         print("////////////////////////////////////////////////")
         print("\n" + Bcolors.OKGREEN + "YOU WIN!!" + Bcolors.ENDC)
         running = False
+    # check if players are defeated
     elif defeated_players == 3:
         print("////////////////////////////////////////////////")
         print("\n" + Bcolors.FAIL + "Enemy has defeated you!" + Bcolors.ENDC)
         running = False
+
+    print("\n")
+    # Enemy attack phase
+    for enemy in enemies:
+        enemy_choice = random.randrange(0, 2)
+        if enemy_choice == 0:
+            target = random.randrange(0, 3)
+            enemy_damage = enemy.generate_damage()
+            players[target].take_damage(enemy_damage)
+
+            print(enemy.name, "attacks", players[target].name, "for", enemy_damage)
+        elif enemy_choice == 1:
+            spell, magic_dmg = enemy.choose_enemy_spell()
+
+            if spell.type == "white":
+                enemy.heal(magic_dmg)
+                print(Bcolors.OKBLUE + spell.name, "heals for", str(magic_dmg) + Bcolors.ENDC)
+            elif spell.type == "black":
+                target = random.randrange(0, 3)
+                players[target].take_damage(magic_dmg)
+                print(Bcolors.OKBLUE + "\n" + enemy.name + "'s" + spell.name + " deals ", str(magic_dmg),
+                      "Points of damage to", players[target].name + Bcolors.ENDC + "\n")
+                if players[target].get_hp() == 0:
+                    print(players[target].name + " has died.")
+                    del players[target]
+
+            enemy.reduce_mp(spell.cost)
